@@ -1,6 +1,7 @@
 package xyz.hyderhadi.todolist.ui
 
 import android.widget.Space
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,6 +48,7 @@ fun TodoListScreen(
     val state = viewModel.state.value
     var todoText by remember { mutableStateOf("") }
     var isTextFieldEmpty by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     Scaffold(
         modifier = modifier
     ) { innerPadding ->
@@ -75,6 +78,11 @@ fun TodoListScreen(
                         onClick = {
                             if(todoText.isBlank()) {
                                 isTextFieldEmpty = true
+                                Toast.makeText(
+                                    context,
+                                    "Invalid Input",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             } else {
                                 viewModel.updateTodoItemText(todoText = todoText)
                                 viewModel.onEvents(TodoListEvents.SaveTodoItem)
