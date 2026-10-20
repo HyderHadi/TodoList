@@ -1,13 +1,11 @@
 package xyz.hyderhadi.todolist.ui
 
-import android.widget.Space
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,17 +20,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -49,6 +45,9 @@ fun TodoListScreen(
     var todoText by remember { mutableStateOf("") }
     var isTextFieldEmpty by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val anyTodoItemDone = state.todoItems.filter { it.isDone }
+    val anyTodoItemActive = state.todoItems.filter { !it.isDone }
+
     Scaffold(
         modifier = modifier
     ) { innerPadding ->
@@ -59,7 +58,9 @@ fun TodoListScreen(
                 modifier = Modifier
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp))
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
                         .padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
@@ -99,11 +100,12 @@ fun TodoListScreen(
                 }
                 HorizontalDivider()
                 LazyColumn(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
                         .padding(16.dp)
                 ) {
-                    items(state.todoItems) { todoItem ->
+                    items(anyTodoItemActive) { todoItem ->
                         TodoItem(
                             todoItem = todoItem,
                             onCheckPress = {
@@ -114,6 +116,37 @@ fun TodoListScreen(
                             }
                         )
                         Spacer(modifier = Modifier.height(12.dp))
+                    }
+                }
+                if(anyTodoItemDone.isNotEmpty()) {
+                    Row(
+                        modifier = modifier.padding(vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Done",
+                            modifier = Modifier.padding(4.dp)
+                        )
+                        HorizontalDivider()
+                    }
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(16.dp))
+                            .padding(16.dp)
+                    ) {
+                        items(anyTodoItemDone) {
+                            TodoItem(
+                                todoItem = it,
+                                onCheckPress = {
+                                    viewModel.updateTodoItemStatus(it)
+                                },
+                                onDeleteClick = {
+                                    viewModel.onEvents(TodoListEvents.DeleteTodoItem(it))
+                                }
+                            )
+                            Spacer(modifier = Modifier.height(12.dp))
+                        }
                     }
                 }
             }
