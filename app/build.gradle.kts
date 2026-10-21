@@ -66,7 +66,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("com.github.nanihadesuka.LazyColumnScrollbar:lazycolumnscrollbar:3.0.0")
 
-
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.11.0")
 
     implementation("androidx.room:room-runtime:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
