@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import xyz.hyderhadi.todolist.domain.model.TodoItem
 
@@ -35,8 +36,8 @@ fun TodoItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
-                modifier = Modifier,
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Checkbox(
                     checked = todoItem.isDone,
@@ -51,7 +52,9 @@ fun TodoItem(
                         TextDecoration.LineThrough
                     } else {
                         TextDecoration.None
-                    }
+                    },
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
                 )
             }
 
@@ -62,7 +65,7 @@ fun TodoItem(
             ) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete"
+                    contentDescription = "Delete",
                 )
             }
         }
@@ -77,7 +80,7 @@ fun TodoItem(
 fun Prev2() {
     TodoItem(
         todoItem = TodoItem(
-            todoText = "Go get some Groceries",
+            todoText = "Go get somkfkdsfkdskfksdfkdskfkdsfe Grokdsajdjsadjsajdajsdjsadjsceries",
             isDone = false
         ),
         onCheckPress = { },

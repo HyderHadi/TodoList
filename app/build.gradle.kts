@@ -66,7 +66,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     implementation("androidx.compose.material:material-icons-extended")
-
+    implementation("com.github.nanihadesuka.LazyColumnScrollbar:lazycolumnscrollbar:3.0.0")
 
 
     implementation("androidx.hilt:hilt-lifecycle-viewmodel-compose:1.3.0")

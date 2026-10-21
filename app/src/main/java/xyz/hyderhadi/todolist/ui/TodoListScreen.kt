@@ -9,14 +9,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,6 +35,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import my.nanihadesuka.compose.LazyColumnScrollbar
+import my.nanihadesuka.compose.ScrollbarSettings
 import xyz.hyderhadi.todolist.ui.components.TodoItem
 
 
@@ -47,6 +52,8 @@ fun TodoListScreen(
     val context = LocalContext.current
     val anyTodoItemDone = state.todoItems.filter { it.isDone }
     val anyTodoItemActive = state.todoItems.filter { !it.isDone }
+    val listStateForActiveTodos = rememberLazyListState()
+    val listStateForDoneTodos = rememberLazyListState()
 
     Scaffold(
         modifier = modifier
@@ -73,7 +80,8 @@ fun TodoListScreen(
                             Text("Add an item")
                         },
                         maxLines = 1,
-                        isError = isTextFieldEmpty
+                        isError = isTextFieldEmpty,
+                        modifier = Modifier.weight(1f)
                     )
                     FloatingActionButton(
                         onClick = {
@@ -90,7 +98,8 @@ fun TodoListScreen(
                                 todoText = ""
                                 isTextFieldEmpty = false
                             }
-                        }
+                        },
+                        modifier = Modifier.padding(horizontal = 12.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
@@ -99,23 +108,33 @@ fun TodoListScreen(
                     }
                 }
                 HorizontalDivider()
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(16.dp))
-                        .padding(16.dp)
+                LazyColumnScrollbar(
+                    state = listStateForActiveTodos,
+                    settings = ScrollbarSettings(
+                        thumbSelectedColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        thumbUnselectedColor = MaterialTheme.colorScheme.surfaceVariant
+                    ),
+                    modifier = Modifier.weight(1f)
                 ) {
-                    items(anyTodoItemActive) { todoItem ->
-                        TodoItem(
-                            todoItem = todoItem,
-                            onCheckPress = {
-                                viewModel.updateTodoItemStatus(todoItem)
-                            },
-                            onDeleteClick = {
-                                viewModel.onEvents(TodoListEvents.DeleteTodoItem(todoItem))
-                            }
-                        )
-                        Spacer(modifier = Modifier.height(12.dp))
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(16.dp))
+                            .padding(16.dp),
+                        state = listStateForActiveTodos
+                    ) {
+                        items(anyTodoItemActive) { todoItem ->
+                            TodoItem(
+                                todoItem = todoItem,
+                                onCheckPress = {
+                                    viewModel.updateTodoItemStatus(todoItem)
+                                },
+                                onDeleteClick = {
+                                    viewModel.onEvents(TodoListEvents.DeleteTodoItem(todoItem))
+                                }
+                            )
+                            Spacer(modifier = Modifier.height(12.dp))
+                        }
                     }
                 }
                 if(anyTodoItemDone.isNotEmpty()) {
@@ -129,23 +148,33 @@ fun TodoListScreen(
                         )
                         HorizontalDivider()
                     }
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(16.dp))
-                            .padding(16.dp)
+                    LazyColumnScrollbar(
+                        state = listStateForDoneTodos,
+                        settings = ScrollbarSettings(
+                            thumbSelectedColor = MaterialTheme.colorScheme.tertiaryContainer,
+                            thumbUnselectedColor = MaterialTheme.colorScheme.surfaceVariant
+                        ),
+                        modifier = Modifier.weight(1f)
                     ) {
-                        items(anyTodoItemDone) {
-                            TodoItem(
-                                todoItem = it,
-                                onCheckPress = {
-                                    viewModel.updateTodoItemStatus(it)
-                                },
-                                onDeleteClick = {
-                                    viewModel.onEvents(TodoListEvents.DeleteTodoItem(it))
-                                }
-                            )
-                            Spacer(modifier = Modifier.height(12.dp))
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(16.dp))
+                                .padding(16.dp),
+                            state = listStateForDoneTodos
+                        ) {
+                            items(anyTodoItemDone) {
+                                TodoItem(
+                                    todoItem = it,
+                                    onCheckPress = {
+                                        viewModel.updateTodoItemStatus(it)
+                                    },
+                                    onDeleteClick = {
+                                        viewModel.onEvents(TodoListEvents.DeleteTodoItem(it))
+                                    }
+                                )
+                                Spacer(modifier = Modifier.height(12.dp))
+                            }
                         }
                     }
                 }
