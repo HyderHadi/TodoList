@@ -3,17 +3,14 @@ package xyz.hyderhadi.todolist.ui
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import xyz.hyderhadi.todolist.domain.model.TodoItem
 import xyz.hyderhadi.todolist.domain.use_case.TodoListUseCase
-import javax.inject.Inject
 
 
-@HiltViewModel
-class TodoListScreenViewModel @Inject constructor(
+class TodoListScreenViewModel(
     private val todoListUseCase: TodoListUseCase
 ): ViewModel() {
 

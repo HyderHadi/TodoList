@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
-    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -47,7 +46,6 @@ android {
 dependencies {
 
     val roomVersion = "2.8.5"
-    val hiltVersion = "2.60.1"
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
@@ -69,13 +67,8 @@ dependencies {
     implementation("com.github.nanihadesuka.LazyColumnScrollbar:lazycolumnscrollbar:3.0.0")
 
 
-    implementation("androidx.hilt:hilt-lifecycle-viewmodel-compose:1.3.0")
 
     implementation("androidx.room:room-runtime:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
-
-
-    implementation("com.google.dagger:hilt-android:$hiltVersion")
-    ksp("com.google.dagger:hilt-android-compiler:$hiltVersion")
 
 }
